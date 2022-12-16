@@ -26,6 +26,18 @@ export function activate(context: vscode.ExtensionContext) {
         }
         scope.setActiveScope(userResponse);
       }),
+      vscode.commands.registerCommand("project-scopes.delete", async (args) => {
+        let selectedScope = args?.label;
+        if (!selectedScope) {
+          selectedScope = await vscode.window.showQuickPick(scope.scopes, {
+            title: "Select project scope to DELETE",
+          });
+        }
+        if (!selectedScope) {
+          return;
+        }
+        scope.deleteScope(selectedScope);
+      }),
       vscode.commands.registerCommand(
         "project-scopes.switcher",
         async (args) => {

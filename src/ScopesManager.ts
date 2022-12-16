@@ -92,6 +92,7 @@ class ScopeScope extends vscode.TreeItem {
       title: "Change scope",
       arguments: [label],
     };
+    this.contextValue = "scope";
   }
 }
 

@@ -29,6 +29,11 @@
         "category": "Project Scopes"
       },
       {
+        "command": "project-scopes.delete",
+        "title": "Delete project scope (DANGER!)",
+        "category": "Project Scopes"
+      },
+      {
         "command": "project-scopes.switcher",
         "title": "Open project scope switcher",
         "category": "Project Scopes"
@@ -81,6 +86,11 @@
         }
       ],
       "view/item/context": [
+        {
+          "command": "project-scopes.delete",
+          "group": "project-scopes.delete",
+          "when": "viewItem == 'scope'"
+        },
         {
           "command": "project-scopes.toggleInclusion",
           "group": "project-scopes.toggleInclusion",

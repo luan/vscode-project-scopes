@@ -92,6 +92,14 @@ export class Scope {
     this.setConfig("activeScope", scope);
   }
 
+  deleteScope(scope: string) {
+    if (!this.scopeSettings[scope]) {
+      return;
+    }
+    delete this.scopeSettings[scope];
+    this.saveScopes();
+  }
+
   get scope() {
     return this.scopeSettings[this.activeScope];
   }

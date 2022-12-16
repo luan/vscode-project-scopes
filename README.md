@@ -10,7 +10,7 @@ This extension is inspired by how IntelliJ solves this problem, with Project Sco
 
 ## Features
 
-In a nutshell, Project Scopes allows you to pick and chose which folders on your project to see at any given point in time. Features round that include:
+In a nutshell, Project Scopes allows you to pick and chose which folders on your project to see at any given point in time. Features around that include:
   - Add as many scopes as you'd like with an identifying name. A `base` scope is automatically added for you.
   - Seamlessly switch between scopes, or switch scopes off entirely
   - Everything can be done either with the command pallette (⌘/⌃ + Shift + P), the UI underneath the file browser or right clicks over directories/files

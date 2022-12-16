@@ -56,7 +56,8 @@ This ignores the global `files.exclude` setting, in favor of `project-scopes.glo
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 1.1.0
+Basic support for remote dev environments
 
 ### 1.0.0
 

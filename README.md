@@ -22,7 +22,7 @@ Available commands:
 | project-scopes.add | Add a new project scope and switch to it | Can be triggered via command pallette or the Project Scopes UI |
 | project-scopes.delete | Delete project scope | Can be triggered via command pallette or the Project Scopes UI |
 | project-scopes.switcher | Open project scope switcher | Search/switch to a scope, via command pallette |
-| project-scopes.refresh | Refresh project scopes settings | This runs automatically for you when settings change, you can run it manually via the command pallette though }|
+| project-scopes.refresh | Refresh project scopes settings | This runs automatically for you when settings change, you can run it manually via the command pallette |
 | project-scopes.toggle | Toggle project scopes extension | Will show/hide all of the filtered files/folders, trigger via command pallette or UI |
 | project-scopes.toggleInclusion | Always include this path (Toggle) | Only available  by right clicking a file/folder. Will toggle whether that entry is in the inclusion list |
 | project-scopes.toggleExclusion | Exclude this path (Toggle) | Only available  by right clicking a file/folder. Will toggle whether that entry is in the exclusion list |

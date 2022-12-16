@@ -10,21 +10,11 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:scopes.refresh",
-    "onCommand:scopes.toggle",
-    "onCommand:scopes.addInclusion",
-    "onCommand:scopes.removeInclusion",
-    "onCommand:scopes.addExclusion",
-    "onCommand:scopes.removeExclusion"
+    "*"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
-      {
-        "command": "scopes.refresh",
-        "title": "Refresh scope settings",
-        "category": "Scopes"
-      },
       {
         "command": "scopes.toggle",
         "title": "Toggle scopes visibility",
@@ -74,7 +64,22 @@
     "configuration": {
       "title": "Scopes",
       "properties": {
-        "scopes.settings": {
+        "scopes.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether or not to show/hide files based on scope selection"
+        },
+        "scopes.activeScope": {
+          "type": "string",
+          "default": "base",
+          "description": "Scope currently in use by the Scopes extension"
+        },
+        "scopes.globalExclude":{
+          "type": "object",
+          "default": null,
+          "description": "Globals to merge in with scope settings into files.exclude"
+        },
+        "scopes.scopes": {
           "type": "object",
           "default": {"base": {"included": [], "excluded": []}},
           "description": "Inclusion/exclusion settings per scope."

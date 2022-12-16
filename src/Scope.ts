@@ -7,24 +7,19 @@ type ScopeSettings = {
   excluded: Set<string>;
 };
 
-type JSONScopeSettings = {
-  activeScope: string;
-  globalExclude: Record<string, true>;
-  enabled: boolean;
-  scopes: Record<string, Record<"included" | "excluded", Array<string>>>;
-};
+type JSONScopes = Record<
+  string,
+  Record<"included" | "excluded", Array<string>>
+>;
 
-const defaultSettings: JSONScopeSettings = {
-  activeScope: "base",
-  enabled: false,
-  globalExclude: {},
-  scopes: {
-    base: {
-      included: [],
-      excluded: [],
-    },
+const defaultScopes: JSONScopes = {
+  base: {
+    included: [],
+    excluded: [],
   },
 };
+
+const CONFIG = "scopes";
 
 export class Scope {
   private scopes: Record<string, ScopeSettings> = {};
@@ -33,74 +28,80 @@ export class Scope {
   private enabled: boolean = false;
 
   constructor(private extensionContext: vscode.ExtensionContext) {
+    const filesExclude = vscode.workspace
+      .getConfiguration()
+      .get("files.exclude", {}) as Record<string, true>;
+    this.globalExclude = this.getConfig("globalExclude", filesExclude);
+    if (!this.globalExclude) {
+      this.globalExclude = filesExclude;
+      this.setConfig("globalExclude", this.globalExclude);
+    }
     this.getSettings();
   }
 
   refresh() {
-    this.saveSettings();
+    this.getSettings();
+    this.updateFilesExclude();
   }
 
   toggle() {
     this.enabled = !this.enabled;
-    this.saveSettings();
+    this.setConfig("enabled", this.enabled);
   }
 
   setActiveScope(scope: string) {
     this.activeScope = scope;
     if (!this.scopes[scope]) {
       this.scopes[scope] = { included: new Set(), excluded: new Set() };
+      this.saveScopes();
     }
-    this.saveSettings();
+    this.setConfig("activeScope", scope);
   }
 
   private get scope() {
     return this.scopes[this.activeScope];
   }
 
-  async add(list: "included" | "excluded", val: string) {
+  add(list: "included" | "excluded", val: string) {
     const path = vscode.workspace.asRelativePath(val);
     this.scope["included"].delete(path);
     this.scope["excluded"].delete(path);
     this.scope[list].add(path);
-    await this.saveSettings();
+    this.saveScopes();
   }
 
-  async remove(list: "included" | "excluded", val: string) {
+  remove(list: "included" | "excluded", val: string) {
     const path = vscode.workspace.asRelativePath(val);
     this.scope[list].delete(path);
-    await this.saveSettings();
+    this.saveScopes();
   }
 
-  private async getSettings() {
-    let scopeSettings = vscode.workspace
-      .getConfiguration()
-      .get("scopes.settings", defaultSettings);
-    let globalExclude = vscode.workspace
-      .getConfiguration()
-      .get("files.exclude", {}) as JSONScopeSettings["globalExclude"];
-    let attempts = 0;
+  private getConfig<T>(config: string, defaultValue: T): T {
+    return vscode.workspace.getConfiguration(CONFIG).get(config, defaultValue);
+  }
 
-    while (attempts < 2) {
-      try {
-        this.activeScope = scopeSettings.activeScope;
-        this.globalExclude = scopeSettings.globalExclude;
-        this.enabled = scopeSettings.enabled;
-        this.scopes = {};
-        Object.keys(scopeSettings.scopes).forEach((key) => {
-          this.scopes[key] = {
-            included: new Set(scopeSettings.scopes[key].included),
-            excluded: new Set(scopeSettings.scopes[key].excluded),
-          };
-        });
-      } catch (e) {
-        console.error(e);
-        scopeSettings = defaultSettings;
-        scopeSettings.globalExclude = globalExclude;
-      }
-      attempts++;
-    }
+  private setConfig(config: string, value: unknown) {
+    vscode.workspace
+      .getConfiguration(CONFIG)
+      .update(config, value, vscode.ConfigurationTarget.Global);
+  }
 
-    await this.saveSettings();
+  private getSettings() {
+    this.enabled = this.getConfig("enabled", true);
+    this.activeScope = this.getConfig("activeScope", "base");
+    const filesExclude = vscode.workspace
+      .getConfiguration()
+      .get("files.exclude", {}) as Record<string, true>;
+    this.globalExclude = this.getConfig("globalExclude", {});
+    let scopes = this.getConfig("scopes", defaultScopes);
+
+    this.scopes = {};
+    Object.keys(scopes).forEach((key) => {
+      this.scopes[key] = {
+        included: new Set(scopes[key].included),
+        excluded: new Set(scopes[key].excluded),
+      };
+    });
   }
 
   private generateExclusionGlobs(): Record<string, true> {
@@ -115,24 +116,7 @@ export class Scope {
     return result;
   }
 
-  private async saveSettings() {
-    let settings: JSONScopeSettings = {
-      activeScope: this.activeScope,
-      enabled: this.enabled,
-      globalExclude: this.globalExclude,
-      scopes: {},
-    };
-    Object.keys(this.scopes).forEach((key) => {
-      const scope = this.scopes[key];
-      settings.scopes[key] = {
-        included: [...scope.included.values()],
-        excluded: [...scope.excluded.values()],
-      };
-    });
-    await vscode.workspace
-      .getConfiguration()
-      .update("scopes.settings", settings, vscode.ConfigurationTarget.Global);
-
+  private updateFilesExclude() {
     vscode.workspace
       .getConfiguration()
       .update(
@@ -140,5 +124,17 @@ export class Scope {
         this.generateExclusionGlobs(),
         vscode.ConfigurationTarget.Global
       );
+  }
+
+  private saveScopes() {
+    let scopes: JSONScopes = {};
+    Object.keys(this.scopes).forEach((key) => {
+      const scope = this.scopes[key];
+      scopes[key] = {
+        included: [...scope.included.values()],
+        excluded: [...scope.excluded.values()],
+      };
+    });
+    this.setConfig("scopes", scopes);
   }
 }

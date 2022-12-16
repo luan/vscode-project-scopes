@@ -1,0 +1,106 @@
+{
+  "name": "scopes",
+  "displayName": "Scopes",
+  "description": "Allows you to split up a code repository into multiple views (scopes) in file explorer and file search.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.72.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:scopes.refresh",
+    "onCommand:scopes.toggle",
+    "onCommand:scopes.addInclusion",
+    "onCommand:scopes.removeInclusion",
+    "onCommand:scopes.addExclusion",
+    "onCommand:scopes.removeExclusion"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "scopes.refresh",
+        "title": "Refresh scope settings",
+        "category": "Scopes"
+      },
+      {
+        "command": "scopes.toggle",
+        "title": "Toggle scopes visibility",
+        "category": "Scopes"
+      },
+      {
+        "command": "scopes.addInclusion",
+        "title": "Add item as included",
+        "category": "Scopes"
+      },
+      {
+        "command": "scopes.removeInclusion",
+        "title": "Remove item as included",
+        "category": "Scopes"
+      },
+      {
+        "command": "scopes.addExclusion",
+        "title": "Add item as Excluded",
+        "category": "Scopes"
+      },
+      {
+        "command": "scopes.removeExclusion",
+        "title": "Remove item as Excluded",
+        "category": "Scopes"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "scopes.addInclusion",
+          "group": "Scopes"
+        },
+        {
+          "command": "scopes.removeInclusion",
+          "group": "Scopes"
+        },
+        {
+          "command": "scopes.addExclusion",
+          "group": "Scopes"
+        },
+        {
+          "command": "scopes.removeExclusion",
+          "group": "Scopes"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Scopes",
+      "properties": {
+        "scopes.settings": {
+          "type": "object",
+          "default": {"base": {"included": [], "excluded": []}},
+          "description": "Inclusion/exclusion settings per scope."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "yarn run compile && yarn run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.72.0",
+    "@types/glob": "^8.0.0",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^5.38.1",
+    "@typescript-eslint/parser": "^5.38.1",
+    "eslint": "^8.24.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.0.0",
+    "typescript": "^4.8.4",
+    "@vscode/test-electron": "^2.1.5"
+  }
+}

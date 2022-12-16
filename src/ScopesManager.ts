@@ -1,9 +1,7 @@
 import * as vscode from "vscode";
-import * as fs from "fs";
-import * as path from "path";
 import { Scope } from "./Scope";
 
-type Items = ExtensionToggle | ScopeScope | ScopeItem;
+type Items = AddButton | ExtensionToggle | ScopeScope | ScopeItem;
 
 export class ScopesManager implements vscode.TreeDataProvider<Items> {
   private _onDidChangeTreeData: vscode.EventEmitter<
@@ -53,8 +51,20 @@ export class ScopesManager implements vscode.TreeDataProvider<Items> {
         ...this.scope.scopes.map(
           (scope) => new ScopeScope(scope, this.scope.getActiveScope())
         ),
+        new AddButton(),
       ];
     }
+  }
+}
+
+class AddButton extends vscode.TreeItem {
+  constructor() {
+    super("Add new scope", vscode.TreeItemCollapsibleState.None);
+    this.iconPath = new vscode.ThemeIcon("plus");
+    this.command = {
+      command: "scopes.add",
+      title: "Add",
+    };
   }
 }
 

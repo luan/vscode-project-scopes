@@ -17,6 +17,25 @@ export function activate(context: vscode.ExtensionContext) {
           scope.refresh();
         }
       }),
+      vscode.commands.registerCommand("scopes.add", async (args) => {
+        const userResponse = await vscode.window.showInputBox({
+          placeHolder: "Name the new project scope to create",
+        });
+        if (!userResponse) {
+          return;
+        }
+        scope.setActiveScope(userResponse);
+      }),
+      vscode.commands.registerCommand("scopes.switcher", async (args) => {
+        const userResponse = await vscode.window.showQuickPick(scope.scopes, {
+          title: "Select project scope to switch to",
+          placeHolder: scope.getActiveScope(),
+        });
+        if (!userResponse) {
+          return;
+        }
+        scope.setActiveScope(userResponse);
+      }),
       vscode.commands.registerCommand("scopes.setActiveScope", (args) =>
         scope.setActiveScope(args)
       ),

@@ -24,6 +24,16 @@
     },
     "commands": [
       {
+        "command": "scopes.add",
+        "title": "Add a scope and switch to it",
+        "category": "Scopes"
+      },
+      {
+        "command": "scopes.switcher",
+        "title": "Open scope switcher",
+        "category": "Scopes"
+      },
+      {
         "command": "scopes.refresh",
         "title": "Refresh scopes settings",
         "category": "Scopes"
@@ -41,7 +51,6 @@
       {
         "command": "scopes.toggleExclusion",
         "title": "Scopes: Exclude this path (Toggle)",
-        "shortTitle": "hi",
         "category": "Scopes"
       }
     ],
@@ -66,13 +75,20 @@
           "group": "Scopes"
         }
       ],
+      "view/title": [
+        {
+          "command": "scopes.add"
+        }
+      ],
       "view/item/context": [
         {
           "command": "scopes.toggleInclusion",
+          "group": "scopes.toggleInclusion",
           "when": "viewItem == 'inclusion'"
         },
         {
           "command": "scopes.toggleExclusion",
+          "group": "scopes.toggleExclusion",
           "when": "viewItem == 'exclusion'"
         }
       ]

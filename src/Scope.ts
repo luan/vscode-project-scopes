@@ -23,18 +23,34 @@ const defaultScopes: JSONScopes = {
 
 const CONFIG = "project-scopes";
 
-function intersect<T>(...sets: Set<T>[]) {
+function intersectPaths(...sets: Set<string>[]) {
   if (!sets.length) {
-    return new Set<T>();
+    return new Set<string>();
   }
-  const i = sets.reduce((m, s, i) => (s.size < sets[m].size ? i : m), 0);
-  const [smallest] = sets.splice(i, 1);
-  const res = new Set<T>();
-  for (let val of smallest) {
-    if (sets.every((s) => s.has(val))) {
-      res.add(val);
+  const res = new Set<string>();
+
+  sets.forEach((set, i) => {
+    for (let val of set) {
+      const otherSets = sets.filter((_, j) => j !== i);
+      if (
+        otherSets.every((s) =>
+          [...s].some((other) => {
+            let v = val;
+            while (v !== "." && v !== "/") {
+              if (other === v) {
+                return true;
+              }
+              v = path.dirname(v);
+            }
+            return false;
+          })
+        )
+      ) {
+        res.add(val);
+      }
     }
-  }
+  });
+
   return res;
 }
 
@@ -215,18 +231,18 @@ export class Scope {
           ignore: path.join(rootPath, folder),
           dot: true,
         });
-        siblings.forEach((p) => set.add(p));
+        siblings.forEach((p) => set.add(rel(p)));
         folder = parent;
         parent = path.dirname(parent);
       }
 
-      set.delete(path.join(rootPath, "/"));
+      set.delete(".");
       sets.push(set);
     }
 
-    const exclusionsFromInclusions = intersect(...sets);
+    const exclusionsFromInclusions = intersectPaths(...sets);
     exclusionsFromInclusions.forEach((path) => {
-      result[rel(path)] = true;
+      result[path] = true;
     });
 
     return result;

@@ -1,6 +1,7 @@
 import { timeStamp } from "console";
 import { glob } from "glob";
 import * as path from "path";
+import { isAbsolute } from "path";
 import * as vscode from "vscode";
 
 type ScopeSettings = {
@@ -104,6 +105,10 @@ export class Scope {
     return this.scopeSettings[this.activeScope];
   }
 
+  scopeByName(name: string) {
+    return this.scopeSettings[name];
+  }
+
   toggleItem(list: "included" | "excluded", val: string) {
     const path = vscode.workspace.asRelativePath(val);
     const other = list === "included" ? "excluded" : "included";
@@ -144,38 +149,70 @@ export class Scope {
     });
   }
 
-  private async generateExclusionGlobs(): Promise<Record<string, true>> {
+  private async heuristicIsScopeForWorkspace(
+    scope: ScopeSettings,
+    folder: vscode.WorkspaceFolder
+  ): Promise<boolean> {
+    const isInWorkspace = async (f: string) => {
+      if (isAbsolute(f) && vscode.workspace.asRelativePath(f) === f) {
+        return false;
+      }
+      const stat = await vscode.workspace.fs.stat(
+        vscode.Uri.parse(
+          path.join(folder.uri.fsPath, vscode.workspace.asRelativePath(f))
+        )
+      );
+      return stat.type !== vscode.FileType.Unknown;
+    };
+    const results = await Promise.all(
+      [...scope.included, ...scope.excluded].map(isInWorkspace)
+    );
+    return results.every((r) => r);
+  }
+
+  private async heuristicDetectScopeWorkspace(
+    scope: ScopeSettings
+  ): Promise<vscode.WorkspaceFolder | undefined> {
+    const folders = vscode.workspace.workspaceFolders ?? [];
+    const values = await Promise.all(
+      folders.map(async (folder) => {
+        if (await this.heuristicIsScopeForWorkspace(scope, folder)) {
+          return folder;
+        }
+      })
+    );
+
+    return values.find((maybeFolder) => maybeFolder);
+  }
+
+  private async generateExclusionGlobs(): Promise<Record<string, true> | null> {
     let result: Record<string, true> = { ...this.globalExclude };
     if (!this.enabled) {
       return result;
     }
-    const rel = vscode.workspace.asRelativePath;
+    const root = await this.heuristicDetectScopeWorkspace(this.scope);
+    if (!root || root.name !== vscode.workspace.name) {
+      vscode.window.showInformationMessage(
+        "Project Scopes: the selected scope cannot be applied to any workspace, skipping.",
+        {}
+      );
+      return null;
+    }
+    const rootPath = root.uri.fsPath;
 
+    const rel = vscode.workspace.asRelativePath;
     this.scope.excluded.forEach((path) => {
       result[rel(path)] = true;
     });
 
     let sets: Set<string>[] = [];
-    for (const pathToInclude of this.scope.included) {
-      const folderPath = path.isAbsolute(pathToInclude)
-        ? pathToInclude
-        : path.join(
-            vscode.workspace.workspaceFolders![0].uri.fsPath,
-            pathToInclude
-          );
-
-      const uri = vscode.Uri.parse(folderPath);
-      const root = vscode.workspace.getWorkspaceFolder(uri);
-      if (!root) {
-        continue;
-      }
-      const rootPath = root.uri.fsPath;
+    for (const folderPath of this.scope.included) {
       const set = new Set<string>();
-      let folder = folderPath;
+      let folder = rel(folderPath);
       let parent = path.dirname(folder);
-      while (parent.length >= rootPath.length) {
-        const siblings = glob.sync(path.join(parent, "*"), {
-          ignore: folder,
+      while (folder !== path.dirname(parent)) {
+        const siblings = glob.sync(path.join(rootPath, parent, "*"), {
+          ignore: path.join(rootPath, folder),
           dot: true,
         });
         siblings.forEach((p) => set.add(p));
@@ -196,13 +233,12 @@ export class Scope {
   }
 
   private async updateFilesExclude() {
-    vscode.workspace
-      .getConfiguration()
-      .update(
-        "files.exclude",
-        await this.generateExclusionGlobs(),
-        vscode.ConfigurationTarget.Global
-      );
+    const globs = await this.generateExclusionGlobs();
+    if (globs) {
+      vscode.workspace
+        .getConfiguration()
+        .update("files.exclude", globs, vscode.ConfigurationTarget.Global);
+    }
   }
 
   private saveScopes() {

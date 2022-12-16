@@ -3,6 +3,13 @@
   "displayName": "Project Scopes",
   "description": "Allows you to split up a code repository into multiple views (scopes) in file explorer and file search.",
   "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "publisher": "cfcluan",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/luan/vscode-project-scopes.git"
+  },
   "engines": {
     "vscode": "^1.72.0"
   },
@@ -10,7 +17,15 @@
     "Other"
   ],
   "activationEvents": [
-    "*"
+    "onStartupFinished",
+    "onView:scopesManager",
+    "onCommand:project-scopes.toggleExclusion",
+    "onCommand:project-scopes.toggleInclusion",
+    "onCommand:project-scopes.toggle",
+    "onCommand:project-scopes.refresh",
+    "onCommand:project-scopes.switcher",
+    "onCommand:project-scopes.delete",
+    "onCommand:project-scopes.add"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -142,6 +157,9 @@
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js"
   },
+  "dependencies": {
+    "glob": "^8.0.3"
+  },
   "devDependencies": {
     "@types/vscode": "^1.72.0",
     "@types/glob": "^8.0.0",
@@ -150,7 +168,6 @@
     "@typescript-eslint/eslint-plugin": "^5.38.1",
     "@typescript-eslint/parser": "^5.38.1",
     "eslint": "^8.24.0",
-    "glob": "^8.0.3",
     "mocha": "^10.0.0",
     "typescript": "^4.8.4",
     "@vscode/test-electron": "^2.1.5"

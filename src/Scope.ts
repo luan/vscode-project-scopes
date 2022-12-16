@@ -20,7 +20,7 @@ const defaultScopes: JSONScopes = {
   },
 };
 
-const CONFIG = "scopes";
+const CONFIG = "project-scopes";
 
 function intersect<T>(...sets: Set<T>[]) {
   if (!sets.length) {

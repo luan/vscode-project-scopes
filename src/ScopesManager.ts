@@ -62,7 +62,7 @@ class AddButton extends vscode.TreeItem {
     super("Add new scope", vscode.TreeItemCollapsibleState.None);
     this.iconPath = new vscode.ThemeIcon("plus");
     this.command = {
-      command: "scopes.add",
+      command: "project-scopes.add",
       title: "Add",
     };
   }
@@ -75,7 +75,7 @@ class ExtensionToggle extends vscode.TreeItem {
       enabled ? "pass-filled" : "circle-large-outline"
     );
     this.command = {
-      command: "scopes.toggle",
+      command: "project-scopes.toggle",
       title: "Toggle",
     };
   }
@@ -88,7 +88,7 @@ class ScopeScope extends vscode.TreeItem {
       label === activeScope ? "circle-filled" : "circle-outline"
     );
     this.command = {
-      command: "scopes.setActiveScope",
+      command: "project-scopes.setActiveScope",
       title: "Change scope",
       arguments: [label],
     };

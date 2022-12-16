@@ -13,11 +13,11 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     ...[
       vscode.workspace.onDidChangeConfiguration((e) => {
-        if (e.affectsConfiguration("scopes")) {
+        if (e.affectsConfiguration("project-scopes")) {
           scope.refresh();
         }
       }),
-      vscode.commands.registerCommand("scopes.add", async (args) => {
+      vscode.commands.registerCommand("project-scopes.add", async (args) => {
         const userResponse = await vscode.window.showInputBox({
           placeHolder: "Name the new project scope to create",
         });
@@ -26,30 +26,35 @@ export function activate(context: vscode.ExtensionContext) {
         }
         scope.setActiveScope(userResponse);
       }),
-      vscode.commands.registerCommand("scopes.switcher", async (args) => {
-        const userResponse = await vscode.window.showQuickPick(scope.scopes, {
-          title: "Select project scope to switch to",
-          placeHolder: scope.getActiveScope(),
-        });
-        if (!userResponse) {
-          return;
+      vscode.commands.registerCommand(
+        "project-scopes.switcher",
+        async (args) => {
+          const userResponse = await vscode.window.showQuickPick(scope.scopes, {
+            title: "Select project scope to switch to",
+            placeHolder: scope.getActiveScope(),
+          });
+          if (!userResponse) {
+            return;
+          }
+          scope.setActiveScope(userResponse);
         }
-        scope.setActiveScope(userResponse);
-      }),
-      vscode.commands.registerCommand("scopes.setActiveScope", (args) =>
+      ),
+      vscode.commands.registerCommand("project-scopes.setActiveScope", (args) =>
         scope.setActiveScope(args)
       ),
-      vscode.commands.registerCommand("scopes.refresh", (args) =>
+      vscode.commands.registerCommand("project-scopes.refresh", (args) =>
         scope.refresh()
       ),
-      vscode.commands.registerCommand("scopes.toggle", (args) =>
+      vscode.commands.registerCommand("project-scopes.toggle", (args) =>
         scope.toggle()
       ),
-      vscode.commands.registerCommand("scopes.toggleInclusion", (args) =>
-        scope.toggleItem("included", args.path || args.label)
+      vscode.commands.registerCommand(
+        "project-scopes.toggleInclusion",
+        (args) => scope.toggleItem("included", args.path || args.label)
       ),
-      vscode.commands.registerCommand("scopes.toggleExclusion", (args) =>
-        scope.toggleItem("excluded", args.path || args.label)
+      vscode.commands.registerCommand(
+        "project-scopes.toggleExclusion",
+        (args) => scope.toggleItem("excluded", args.path || args.label)
       ),
     ]
   );

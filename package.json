@@ -1,6 +1,6 @@
 {
-  "name": "scopes",
-  "displayName": "Scopes",
+  "name": "project-scopes",
+  "displayName": "Project Scopes",
   "description": "Allows you to split up a code repository into multiple views (scopes) in file explorer and file search.",
   "version": "0.0.1",
   "engines": {
@@ -18,100 +18,100 @@
       "explorer": [
         {
           "id": "scopesManager",
-          "name": "Scopes"
+          "name": "Project Scopes"
         }
       ]
     },
     "commands": [
       {
-        "command": "scopes.add",
-        "title": "Add a scope and switch to it",
-        "category": "Scopes"
+        "command": "project-scopes.add",
+        "title": "Add a new project scope and switch to it",
+        "category": "Project Scopes"
       },
       {
-        "command": "scopes.switcher",
-        "title": "Open scope switcher",
-        "category": "Scopes"
+        "command": "project-scopes.switcher",
+        "title": "Open project scope switcher",
+        "category": "Project Scopes"
       },
       {
-        "command": "scopes.refresh",
-        "title": "Refresh scopes settings",
-        "category": "Scopes"
+        "command": "project-scopes.refresh",
+        "title": "Refresh project scopes settings",
+        "category": "Project Scopes"
       },
       {
-        "command": "scopes.toggle",
-        "title": "Toggle scopes visibility",
-        "category": "Scopes"
+        "command": "project-scopes.toggle",
+        "title": "Toggle project scopes extension",
+        "category": "Project Scopes"
       },
       {
-        "command": "scopes.toggleInclusion",
-        "title": "Scopes: Always include this path (Toggle)",
-        "category": "Scopes"
+        "command": "project-scopes.toggleInclusion",
+        "title": "Project Scopes: Always include this path (Toggle)",
+        "category": "Project Scopes"
       },
       {
-        "command": "scopes.toggleExclusion",
-        "title": "Scopes: Exclude this path (Toggle)",
-        "category": "Scopes"
+        "command": "project-scopes.toggleExclusion",
+        "title": "Project Scopes: Exclude this path (Toggle)",
+        "category": "Project Scopes"
       }
     ],
     "menus": {
       "commandPalette": [
         {
-          "command": "scopes.toggleInclusion",
+          "command": "project-scopes.toggleInclusion",
           "when": "filesExplorerFocus"
         },
         {
-          "command": "scopes.toggleExclusion",
+          "command": "project-scopes.toggleExclusion",
           "when": "filesExplorerFocus"
         }
       ],
       "explorer/context": [
         {
-          "command": "scopes.toggleInclusion",
-          "group": "Scopes"
+          "command": "project-scopes.toggleInclusion",
+          "group": "Project Scopes"
         },
         {
-          "command": "scopes.toggleExclusion",
-          "group": "Scopes"
+          "command": "project-scopes.toggleExclusion",
+          "group": "Project Scopes"
         }
       ],
       "view/title": [
         {
-          "command": "scopes.add"
+          "command": "project-scopes.add"
         }
       ],
       "view/item/context": [
         {
-          "command": "scopes.toggleInclusion",
-          "group": "scopes.toggleInclusion",
+          "command": "project-scopes.toggleInclusion",
+          "group": "project-scopes.toggleInclusion",
           "when": "viewItem == 'inclusion'"
         },
         {
-          "command": "scopes.toggleExclusion",
-          "group": "scopes.toggleExclusion",
+          "command": "project-scopes.toggleExclusion",
+          "group": "project-scopes.toggleExclusion",
           "when": "viewItem == 'exclusion'"
         }
       ]
     },
     "configuration": {
-      "title": "Scopes",
+      "title": "Project Scopes",
       "properties": {
-        "scopes.enabled": {
+        "project-scopes.enabled": {
           "type": "boolean",
           "default": true,
           "description": "Whether or not to show/hide files based on scope selection"
         },
-        "scopes.activeScope": {
+        "project-scopes.activeScope": {
           "type": "string",
           "default": "base",
           "description": "Scope currently in use by the Scopes extension"
         },
-        "scopes.globalExclude": {
+        "project-scopes.globalExclude": {
           "type": "object",
           "default": null,
           "description": "Globals to merge in with scope settings into files.exclude"
         },
-        "scopes.scopes": {
+        "project-scopes.scopes": {
           "type": "object",
           "default": {
             "base": {

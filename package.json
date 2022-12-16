@@ -35,12 +35,13 @@
       },
       {
         "command": "scopes.toggleInclusion",
-        "title": "Toggle item scope inclusion",
+        "title": "Scopes: Always include this path (Toggle)",
         "category": "Scopes"
       },
       {
         "command": "scopes.toggleExclusion",
-        "title": "Toggle item scope exclusion",
+        "title": "Scopes: Exclude this path (Toggle)",
+        "shortTitle": "hi",
         "category": "Scopes"
       }
     ],

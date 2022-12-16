@@ -2,10 +2,11 @@
   "name": "project-scopes",
   "displayName": "Project Scopes",
   "description": "Allows you to split up a code repository into multiple views (scopes) in file explorer and file search.",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "license": "MIT",
   "private": true,
   "publisher": "cfcluan",
+  "icon": "icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/luan/vscode-project-scopes.git"

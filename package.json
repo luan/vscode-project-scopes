@@ -2,7 +2,7 @@
   "name": "project-scopes",
   "displayName": "Project Scopes",
   "description": "Allows you to split up a code repository into multiple views (scopes) in file explorer and file search.",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "engines": {
     "vscode": "^1.72.0"
   },
@@ -119,7 +119,7 @@
               "excluded": []
             }
           },
-          "description": "Inclusion/exclusion settings per scope."
+          "description": "Inclusion/exclusion settings per scope"
         }
       }
     }

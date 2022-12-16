@@ -1,35 +1,52 @@
-# scopes README
+# VSCode Project Scopes
 
-This is the README for your extension "scopes". After writing up a brief description, we recommend including the following sections.
+VSCode has features to make shard workspaces or to group them together, but unfortunately those don't quite work with every moonrepo. Monorepos have a way to be deeply integrated and have a hard time migrating to things that properly shard the codebase. A solution is to hide the parts of the project you're not using.
+
+This extension is inspired by how IntelliJ solves this problem, with Project Scopes. This allows you to create a view of the project where you're going to find files, navigate, etc.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+In a nutshell, Project Scopes allows you to pick and chose which folders on your project to see at any given point in time. Features round that include:
+  - Add as many scopes as you'd like with an identifying name. A `base` scope is automatically added for you.
+  - Seamlessly switch between scopes, or switch scopes off entirely
+  - Everything can be done either with the command pallette (⌘/⌃ + Shift + P), the UI underneath the file browser or right clicks over directories/files
 
-For example if there is an image subfolder under your extension project workspace:
+Available commands:
 
-\!\[feature X\]\(images/feature-x.png\)
+| command | title | notes |
+| ------- | ----- | ------ |
+| project-scopes.add | Add a new project scope and switch to it | Can be triggered via command pallette or the Project Scopes UI |
+| project-scopes.switcher | Open project scope switcher | Search/switch to a scope, via command pallette |
+| project-scopes.refresh | Refresh project scopes settings | This runs automatically for you when settings change, you can run it manually via the command pallette though }|
+| project-scopes.toggle | Toggle project scopes extension | Will show/hide all of the filtered files/folders, trigger via command pallette or UI |
+| project-scopes.toggleInclusion | Always include this path (Toggle) | Only available  by right clicking a file/folder. Will toggle whether that entry is in the inclusion list |
+| project-scopes.toggleExclusion | Exclude this path (Toggle) | Only available  by right clicking a file/folder. Will toggle whether that entry is in the exclusion list |
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+### A quick video demoing the features
 
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+**video here**
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+  - `project-scopes.enabled`: Whether or not to show/hide files based on scope selection
+  - `project-scopes.activeScope`: Scope currently in use by the Scopes extension
+  - `project-scopes.globalExclude`: Globals to merge in with scope settings into files.exclude. **This setting takes over from `files.exclude` built-in because the Extension uses it for the main functionality**
+  - `project-scopes.scopes`: Inclusion/exclusion settings per scope
 
-## Known Issues
+If you use settings sync, I'd recommend setting the following settings to ignore fringe configuration for this extension so that your projects between multiple computers don't conflict:
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+```
+  "settingsSync.ignoredSettings": [
+    "files.exclude",
+    "project-scopes.scopes",
+    "project-scopes.activeScope",
+    "project-scopes.enabled"
+  ],
+```
+
+This ignores the global `files.exclude` setting, in favor of `project-scopes.globalExclude`, which is where you're keeping your global exclude settings now. It also ignores project specific settings if you can't keep those in workspace settings (which is the case for me since the workspace is checked-in and these preferences are personal).
 
 ## Release Notes
 
@@ -37,35 +54,4 @@ Users appreciate release notes as you update your extension.
 
 ### 1.0.0
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Initial release of Project Scopes

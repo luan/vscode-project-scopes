@@ -207,9 +207,9 @@ export class Scope {
       return result;
     }
     const root = await this.heuristicDetectScopeWorkspace(this.scope);
-    if (!root || root.name !== vscode.workspace.name) {
+    if (!root || !vscode.workspace.name?.includes(root.name)) {
       vscode.window.showInformationMessage(
-        "Project Scopes: the selected scope cannot be applied to any workspace, skipping.",
+        `Project Scopes: the selected scope cannot be applied to any workspace, skipping. Root name: '${root?.name}'; Workspace name: '${vscode.workspace.name}'`,
         {}
       );
       return null;

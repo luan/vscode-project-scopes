@@ -14,6 +14,14 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "id": "scopesManager",
+          "name": "Scopes"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "scopes.refresh",
@@ -37,6 +45,16 @@
       }
     ],
     "menus": {
+      "commandPalette": [
+        {
+          "command": "scopes.toggleInclusion",
+          "when": "filesExplorerFocus"
+        },
+        {
+          "command": "scopes.toggleExclusion",
+          "when": "filesExplorerFocus"
+        }
+      ],
       "explorer/context": [
         {
           "command": "scopes.toggleInclusion",
@@ -45,6 +63,16 @@
         {
           "command": "scopes.toggleExclusion",
           "group": "Scopes"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "scopes.toggleInclusion",
+          "when": "viewItem == 'inclusion'"
+        },
+        {
+          "command": "scopes.toggleExclusion",
+          "when": "viewItem == 'exclusion'"
         }
       ]
     },
@@ -61,14 +89,19 @@
           "default": "base",
           "description": "Scope currently in use by the Scopes extension"
         },
-        "scopes.globalExclude":{
+        "scopes.globalExclude": {
           "type": "object",
           "default": null,
           "description": "Globals to merge in with scope settings into files.exclude"
         },
         "scopes.scopes": {
           "type": "object",
-          "default": {"base": {"included": [], "excluded": []}},
+          "default": {
+            "base": {
+              "included": [],
+              "excluded": []
+            }
+          },
           "description": "Inclusion/exclusion settings per scope."
         }
       }

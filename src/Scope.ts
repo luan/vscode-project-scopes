@@ -38,10 +38,11 @@ function intersect<T>(...sets: Set<T>[]) {
 }
 
 export class Scope {
-  private scopes: Record<string, ScopeSettings> = {};
+  private scopeSettings: Record<string, ScopeSettings> = {};
   private activeScope: string = "base";
   private globalExclude: Record<string, true> = {};
   private enabled: boolean = false;
+  private callbacks: (() => void)[] = [];
 
   constructor(private extensionContext: vscode.ExtensionContext) {
     const filesExclude = vscode.workspace
@@ -55,9 +56,22 @@ export class Scope {
     this.getSettings();
   }
 
+  subscribe(cb: () => void) {
+    this.callbacks.push(cb);
+  }
+
+  get isEnabled() {
+    return this.enabled;
+  }
+
+  get scopes() {
+    return Object.keys(this.scopeSettings);
+  }
+
   refresh() {
     this.getSettings();
     this.updateFilesExclude();
+    this.callbacks.forEach((cb) => cb());
   }
 
   toggle() {
@@ -65,17 +79,21 @@ export class Scope {
     this.setConfig("enabled", this.enabled);
   }
 
+  getActiveScope() {
+    return this.activeScope;
+  }
+
   setActiveScope(scope: string) {
     this.activeScope = scope;
-    if (!this.scopes[scope]) {
-      this.scopes[scope] = { included: new Set(), excluded: new Set() };
+    if (!this.scopeSettings[scope]) {
+      this.scopeSettings[scope] = { included: new Set(), excluded: new Set() };
       this.saveScopes();
     }
     this.setConfig("activeScope", scope);
   }
 
-  private get scope() {
-    return this.scopes[this.activeScope];
+  get scope() {
+    return this.scopeSettings[this.activeScope];
   }
 
   toggleItem(list: "included" | "excluded", path: string) {
@@ -108,9 +126,9 @@ export class Scope {
     this.globalExclude = this.getConfig("globalExclude", {});
     let scopes = this.getConfig("scopes", defaultScopes);
 
-    this.scopes = {};
+    this.scopeSettings = {};
     Object.keys(scopes).forEach((key) => {
-      this.scopes[key] = {
+      this.scopeSettings[key] = {
         included: new Set(scopes[key].included),
         excluded: new Set(scopes[key].excluded),
       };
@@ -129,14 +147,21 @@ export class Scope {
     });
 
     let sets: Set<string>[] = [];
-    for (const folderPath of this.scope.included) {
+    for (const pathToInclude of this.scope.included) {
+      const folderPath = path.isAbsolute(pathToInclude)
+        ? pathToInclude
+        : path.join(
+            vscode.workspace.workspaceFolders![0].uri.fsPath,
+            pathToInclude
+          );
+
       const uri = vscode.Uri.parse(folderPath);
       const root = vscode.workspace.getWorkspaceFolder(uri);
       if (!root) {
         continue;
       }
-      const set = new Set<string>();
       const rootPath = root.uri.fsPath;
+      const set = new Set<string>();
       let folder = folderPath;
       let parent = path.dirname(folder);
       while (parent.length >= rootPath.length) {
@@ -173,8 +198,8 @@ export class Scope {
 
   private saveScopes() {
     let scopes: JSONScopes = {};
-    Object.keys(this.scopes).forEach((key) => {
-      const scope = this.scopes[key];
+    Object.keys(this.scopeSettings).forEach((key) => {
+      const scope = this.scopeSettings[key];
       scopes[key] = {
         included: [...scope.included.values()],
         excluded: [...scope.excluded.values()],

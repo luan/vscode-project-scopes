@@ -1,9 +1,14 @@
 import * as vscode from "vscode";
 import { Scope } from "./Scope";
+import { ScopesManager } from "./ScopesManager";
 
 export function activate(context: vscode.ExtensionContext) {
   const scope = new Scope(context);
-  console.log("scopes activated");
+  vscode.window.createTreeView("scopesManager", {
+    treeDataProvider: new ScopesManager(scope),
+    canSelectMany: false,
+    showCollapseAll: true,
+  });
 
   context.subscriptions.push(
     ...[
@@ -12,6 +17,9 @@ export function activate(context: vscode.ExtensionContext) {
           scope.refresh();
         }
       }),
+      vscode.commands.registerCommand("scopes.setActiveScope", (args) =>
+        scope.setActiveScope(args)
+      ),
       vscode.commands.registerCommand("scopes.refresh", (args) =>
         scope.refresh()
       ),
@@ -19,10 +27,10 @@ export function activate(context: vscode.ExtensionContext) {
         scope.toggle()
       ),
       vscode.commands.registerCommand("scopes.toggleInclusion", (args) =>
-        scope.toggleItem("included", args.path)
+        scope.toggleItem("included", args.path || args.label)
       ),
       vscode.commands.registerCommand("scopes.toggleExclusion", (args) =>
-        scope.toggleItem("excluded", args.path)
+        scope.toggleItem("excluded", args.path || args.label)
       ),
     ]
   );

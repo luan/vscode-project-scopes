@@ -25,7 +25,7 @@ Available commands:
 
 ### A quick video demoing the features
 
-**video here**
+https://git.corp.stripe.com/storage/user/11791/files/cd5ac7fa-c52f-44b5-b305-f5834fd5c648
 
 ## Extension Settings
 

@@ -29,7 +29,8 @@ Available commands:
 
 ### A quick video demoing the features
 
-https://git.corp.stripe.com/storage/user/11791/files/cd5ac7fa-c52f-44b5-b305-f5834fd5c648
+https://user-images.githubusercontent.com/223760/208175365-f7b4e08e-1e3c-4c4f-8c25-8fff000029e1.mp4
+
 
 ## Extension Settings
 

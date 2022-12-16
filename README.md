@@ -6,8 +6,7 @@ This extension is inspired by how IntelliJ solves this problem, with Project Sco
 
 ## Installation
 
-This extension is not yet in the market place, so headover to the releases page to download and install the package.
-Alternatively, clone this repo and run `vsce package` to generate the VSIX file yourself.
+[VSCode marketplace]([url](https://marketplace.visualstudio.com/items?itemName=cfcluan.project-scopes&ssr=false))
 
 ## Features
 

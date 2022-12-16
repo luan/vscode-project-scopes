@@ -4,6 +4,11 @@ VSCode has features to make shard workspaces or to group them together, but unfo
 
 This extension is inspired by how IntelliJ solves this problem, with Project Scopes. This allows you to create a view of the project where you're going to find files, navigate, etc.
 
+## Installation
+
+This extension is not yet in the market place, so headover to the releases page to download and install the package.
+Alternatively, clone this repo and run `vsce package` to generate the VSIX file yourself.
+
 ## Features
 
 In a nutshell, Project Scopes allows you to pick and chose which folders on your project to see at any given point in time. Features round that include:

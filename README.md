@@ -6,7 +6,7 @@ This extension is inspired by how IntelliJ solves this problem, with Project Sco
 
 ## Installation
 
-[VSCode marketplace]([url](https://marketplace.visualstudio.com/items?itemName=cfcluan.project-scopes&ssr=false))
+[VSCode marketplace](https://marketplace.visualstudio.com/items?itemName=cfcluan.project-scopes&ssr=false)
 
 ## Features
 

@@ -96,7 +96,8 @@ export class Scope {
     return this.scopeSettings[this.activeScope];
   }
 
-  toggleItem(list: "included" | "excluded", path: string) {
+  toggleItem(list: "included" | "excluded", val: string) {
+    const path = vscode.workspace.asRelativePath(val);
     const other = list === "included" ? "excluded" : "included";
     if (this.scope[list].has(path)) {
       this.scope[list].delete(path);

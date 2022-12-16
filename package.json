@@ -16,47 +16,34 @@
   "contributes": {
     "commands": [
       {
+        "command": "scopes.refresh",
+        "title": "Refresh scopes settings",
+        "category": "Scopes"
+      },
+      {
         "command": "scopes.toggle",
         "title": "Toggle scopes visibility",
         "category": "Scopes"
       },
       {
-        "command": "scopes.addInclusion",
-        "title": "Add item as included",
+        "command": "scopes.toggleInclusion",
+        "title": "Toggle item scope inclusion",
         "category": "Scopes"
       },
       {
-        "command": "scopes.removeInclusion",
-        "title": "Remove item as included",
-        "category": "Scopes"
-      },
-      {
-        "command": "scopes.addExclusion",
-        "title": "Add item as Excluded",
-        "category": "Scopes"
-      },
-      {
-        "command": "scopes.removeExclusion",
-        "title": "Remove item as Excluded",
+        "command": "scopes.toggleExclusion",
+        "title": "Toggle item scope exclusion",
         "category": "Scopes"
       }
     ],
     "menus": {
       "explorer/context": [
         {
-          "command": "scopes.addInclusion",
+          "command": "scopes.toggleInclusion",
           "group": "Scopes"
         },
         {
-          "command": "scopes.removeInclusion",
-          "group": "Scopes"
-        },
-        {
-          "command": "scopes.addExclusion",
-          "group": "Scopes"
-        },
-        {
-          "command": "scopes.removeExclusion",
+          "command": "scopes.toggleExclusion",
           "group": "Scopes"
         }
       ]

@@ -1,6 +1,6 @@
 # VSCode Project Scopes
 
-VSCode has features to make shard workspaces or to group them together, but unfortunately those don't quite work with every monorepo. Monorepos have a way to be deeply integrated and have a hard time migrating to things that properly shard the codebase. A solution is to hide the parts of the project you're not using.
+VSCode has features to make shared workspaces or to group them together, but unfortunately those don't quite work with every monorepo. Monorepos have a way to be deeply integrated and have a hard time migrating to things that properly shard the codebase. A solution is to hide the parts of the project you're not using.
 
 This extension is inspired by how IntelliJ solves this problem, with Project Scopes. This allows you to create a view of the project where you're going to find files, navigate, etc.
 

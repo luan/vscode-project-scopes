@@ -23,31 +23,33 @@ const defaultScopes: JSONScopes = {
 
 const CONFIG = "project-scopes";
 
-function intersectPaths(...sets: Set<string>[]) {
+function intersectPaths(...sets: Set<string>[]): Set<string> {
   if (!sets.length) {
     return new Set<string>();
   }
-  const res = new Set<string>();
 
-  sets.forEach((set, i) => {
+  const countMap: { [key: string]: number } = {};
+  const allValues = new Set<string>();
+
+  sets.forEach((set) => {
     for (let val of set) {
-      const otherSets = sets.filter((_, j) => j !== i);
-      if (
-        otherSets.every((s) =>
-          [...s].some((other) => {
-            let v = val;
-            while (v !== "." && v !== "/") {
-              if (other === v) {
-                return true;
-              }
-              v = path.dirname(v);
-            }
-            return false;
-          })
-        )
-      ) {
-        res.add(val);
+      allValues.add(val);
+      let v = val;
+      while (v !== "." && v !== "/") {
+        if (countMap[v] !== undefined) {
+          countMap[v] += 1;
+        } else {
+          countMap[v] = 1;
+        }
+        v = path.dirname(v);
       }
+    }
+  });
+
+  const res = new Set<string>();
+  allValues.forEach((val) => {
+    if (countMap[val] === sets.length) {
+      res.add(val);
     }
   });
 
@@ -173,17 +175,20 @@ export class Scope {
       if (isAbsolute(f) && vscode.workspace.asRelativePath(f) === f) {
         return false;
       }
-      const stat = await vscode.workspace.fs.stat(
-        vscode.Uri.parse(
-          path.join(folder.uri.fsPath, vscode.workspace.asRelativePath(f))
-        )
+      const filePath = vscode.Uri.parse(
+        path.join(folder.uri.fsPath, vscode.workspace.asRelativePath(f))
       );
-      return stat.type !== vscode.FileType.Unknown;
+      try {
+        const stat = await vscode.workspace.fs.stat(filePath);
+        return stat.type !== vscode.FileType.Unknown;
+      } catch (e) {
+        return false;
+      }
     };
     const results = await Promise.all(
       [...scope.included, ...scope.excluded].map(isInWorkspace)
     );
-    return results.every((r) => r);
+    return most(results);
   }
 
   private async heuristicDetectScopeWorkspace(
@@ -268,4 +273,9 @@ export class Scope {
     });
     this.setConfig("scopes", scopes);
   }
+}
+
+function most(arr: Array<boolean>) {
+  const count = arr.filter(Boolean).length ?? 0;
+  return count / arr.length > 0.5;
 }

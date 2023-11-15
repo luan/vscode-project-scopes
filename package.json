@@ -96,11 +96,6 @@
           "group": "Project Scopes"
         }
       ],
-      "view/title": [
-        {
-          "command": "project-scopes.add"
-        }
-      ],
       "view/item/context": [
         {
           "command": "project-scopes.delete",
@@ -169,8 +164,10 @@
     "@typescript-eslint/eslint-plugin": "^5.38.1",
     "@typescript-eslint/parser": "^5.38.1",
     "@vscode/test-electron": "^2.1.5",
+    "chai": "^4.3.10",
     "eslint": "^8.24.0",
     "mocha": "^10.0.0",
-    "typescript": "^4.8.4"
+    "typescript": "^4.8.4",
+    "vscode": "^1.1.37"
   }
 }

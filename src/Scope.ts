@@ -22,26 +22,26 @@ const defaultScopes: JSONScopes = {
 
 const CONFIG = "project-scopes";
 
-function ancestorPaths(p: string) {
-  const res = [];
-  let v = p;
-  while (v !== "." && v !== path.sep) {
-    res.push(v);
-    v = path.dirname(v);
-  }
-  return res;
-}
-
 function intersetPathsPair(setA: Set<string>, setB: Set<string>): Set<string> {
   const res = new Set<string>();
   for (let val of setA) {
-    if (setB.has(val)) {
-      res.add(val);
-    } else {
-      const ancestors = ancestorPaths(val);
-      if (ancestors.some((v) => setB.has(v))) {
+    let v = val;
+    while (v !== "." && v !== path.sep) {
+      if (setB.has(v)) {
         res.add(val);
+        break;
       }
+      v = path.dirname(v);
+    }
+  }
+  for (let val of setB) {
+    let v = val;
+    while (v !== "." && v !== path.sep) {
+      if (setA.has(v)) {
+        res.add(val);
+        break;
+      }
+      v = path.dirname(v);
     }
   }
   return res;

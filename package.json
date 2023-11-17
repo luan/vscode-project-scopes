@@ -78,12 +78,20 @@
     "menus": {
       "commandPalette": [
         {
+          "command": "project-scopes.toggleInclusion"
+        },
+        {
+          "command": "project-scopes.toggleExclusion"
+        }
+      ],
+      "editor/title/context": [
+        {
           "command": "project-scopes.toggleInclusion",
-          "when": "filesExplorerFocus"
+          "group": "Project Scopes"
         },
         {
           "command": "project-scopes.toggleExclusion",
-          "when": "filesExplorerFocus"
+          "group": "Project Scopes"
         }
       ],
       "explorer/context": [

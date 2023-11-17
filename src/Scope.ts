@@ -205,6 +205,23 @@ export class Scope {
     return values.find((maybeFolder) => maybeFolder);
   }
 
+  public async fileExists(filePath: string): Promise<boolean> {
+    const root = await this.heuristicDetectScopeWorkspace(this.scope);
+    if (!root) {
+      return false;
+    }
+    const rootPath = root.uri.fsPath;
+    const filePathUri = vscode.Uri.parse(
+      path.join(rootPath, vscode.workspace.asRelativePath(filePath))
+    );
+    try {
+      const stat = await vscode.workspace.fs.stat(filePathUri);
+      return stat.type !== vscode.FileType.Unknown;
+    } catch (e) {
+      return false;
+    }
+  }
+
   private async generateExclusionGlobs(): Promise<Record<string, true> | null> {
     let result: Record<string, true> = { ...this.globalExclude };
     if (!this.enabled) {

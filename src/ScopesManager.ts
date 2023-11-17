@@ -37,18 +37,40 @@ export class ScopesManager implements vscode.TreeDataProvider<Items> {
         ];
       }
       if (element instanceof ScopeInclusion) {
-        return [
+        return Promise.all([
           ...[...this.scope.scopeByName(element.scopeName).included].map(
-            (path) => new ScopeItem(path, "inclusion")
+            async (path) => {
+              const exists = await this.scope.fileExists(path);
+              if (!exists) {
+                return new ScopeItem(
+                  `${path} (file not found)`,
+                  "inclusion",
+                  "File not found",
+                  "error"
+                );
+              }
+              return new ScopeItem(path, "inclusion");
+            }
           ),
-        ];
+        ]);
       }
       if (element instanceof ScopeExclusion) {
-        return [
+        return Promise.all([
           ...[...this.scope.scopeByName(element.scopeName).excluded].map(
-            (path) => new ScopeItem(path, "exclusion")
+            async (path) => {
+              const exists = await this.scope.fileExists(path);
+              if (!exists) {
+                return new ScopeItem(
+                  `${path} (file not found)`,
+                  "exclusion",
+                  "File not found",
+                  "error"
+                );
+              }
+              return new ScopeItem(path, "exclusion");
+            }
           ),
-        ];
+        ]);
       }
       return [] as Items[];
     } else {
@@ -117,9 +139,20 @@ class ScopeExclusion extends vscode.TreeItem {
 }
 
 class ScopeItem extends vscode.TreeItem {
-  constructor(public readonly label: string, context: string) {
+  constructor(
+    public readonly label: string,
+    context: string,
+    tooltip?: string,
+    iconPath?: string
+  ) {
     super(label, vscode.TreeItemCollapsibleState.None);
     this.resourceUri = vscode.Uri.parse(label);
     this.contextValue = context;
+    if (tooltip) {
+      this.tooltip = tooltip;
+    }
+    if (iconPath) {
+      this.iconPath = new vscode.ThemeIcon(iconPath);
+    }
   }
 }
